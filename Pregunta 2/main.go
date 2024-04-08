@@ -47,14 +47,25 @@ func freivaldsMatrixMult(A [][]int, B [][]int, C [][]int) bool {
 Función que dadas dos matrices A y B, indica si B es la inversa de A utilizando
 el algoritmo de Freivalds. Se asume que las dimensiones de A y B son correctas
 */
-func determineIfInverse(A [][]int, B [][]int) bool {
+func determineIfInverse(A [][]int, B [][]int, epsilon float64) bool {
+	k := 1
+	tmp := 1.0
+	for tmp > epsilon {
+		k += 1
+		tmp /= 2.0
+	}
 	n := len(A[0])
 	I := make([][]int, n)
 	for i := 0; i < n; i += 1 {
 		I[i] = make([]int, n)
 		I[i][i] = 1
 	}
-	return freivaldsMatrixMult(A, B, I)
+
+	resAccum := true
+	for i := 0; i < k; i += 1 {
+		resAccum = resAccum && freivaldsMatrixMult(A, B, I)
+	}
+	return resAccum
 }
 
 func main() {
@@ -94,6 +105,6 @@ func main() {
 		},
 	}
 
-	fmt.Println(determineIfInverse(A, inverseA))
-	fmt.Println(determineIfInverse(A, notInverseA))
+	fmt.Println(determineIfInverse(A, inverseA, 0.00390625))
+	fmt.Println(determineIfInverse(A, notInverseA, 0.00390625))
 }
